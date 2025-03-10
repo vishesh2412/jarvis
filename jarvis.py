@@ -19,19 +19,20 @@ def speak(audio):
 
 def wishMe():
     hour = int(datetime.datetime.now().hour)
-    if hour>=0 and hour<12:
+    if hour >= 0 and hour < 12:
         speak("Good Morning!")
 
-    elif hour>=12 and hour<18:
+    elif hour >= 12 and hour < 18:
         speak("Good Afternoon!")
 
     else:
         speak("Good Evening!")
 
-    speak("Hey I am Jarvis. How may I help you")
+    speak("Hey I am Jarvis. How may I help you?")
+
 
 def takeCommand():
-    #It takes microphone input from the user and returns string output
+    # It takes microphone input from the user and returns string output
 
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -45,23 +46,23 @@ def takeCommand():
         print(f"User said: {query}\n")
 
     except Exception as e:
-        # print(e)
         print("Say that again please...")
         return "None"
     return query
+
 
 def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login('yashswarup3211@gmail.com', 'Anshu1906')
-    server.sendmail('yashswarup3211@gmail.com', to, content)
+    server.login('your_email@gmail.com', 'your_password')  # Replace with your email credentials securely
+    server.sendmail('your_email@gmail.com', to, content)
     server.close()
+
 
 if __name__ == "__main__":
     wishMe()
     while True:
-    # if 1:
         query = takeCommand().lower()
 
         # Logic for executing tasks based on query
@@ -83,35 +84,43 @@ if __name__ == "__main__":
         elif 'open stackoverflow' in query:
             webbrowser.open("stackoverflow.com")
 
-
         elif 'play music' in query:
-            music_dir = "D:\\Songs\\Songs"
-            songs = os.listdir(music_dir)
-            print(songs)
-            os.startfile(os.path.join(music_dir, songs[0]))
+            music_dir = input("Enter the path of your music directory: ")
+            if os.path.exists(music_dir):
+                songs = os.listdir(music_dir)
+                if songs:
+                    print(songs)
+                    os.startfile(os.path.join(music_dir, songs[0]))
+                else:
+                    speak("No songs found in the directory.")
+            else:
+                speak("Invalid path. Please check the directory.")
 
         elif 'the time' in query:
             strTime = datetime.datetime.now().strftime("%H:%M:%S")
             speak(f"Sir, the time is {strTime}")
 
         elif 'open code' in query:
-            codePath = "C:\\Users\\HP\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
-            os.startfile(codePath)
+            codePath = input("Enter the path of your VS Code executable: ")
+            if os.path.exists(codePath):
+                os.startfile(codePath)
+            else:
+                speak("Invalid path. Please check the file location.")
 
-        elif 'email to Yash' in query:
+        elif 'email to someone' in query:
             try:
                 speak("What should I say?")
                 content = takeCommand()
-                to = "yashswarup3211@gmail.com"
+                to = "recipient_email@gmail.com"  # Replace with actual recipient email
                 sendEmail(to, content)
                 speak("Email has been sent!")
             except Exception as e:
                 print(e)
-                speak("Sorry my friend Yash bhai. I am not able to send this email at this moment")
+                speak("Sorry, I am not able to send this email at the moment.")
 
         elif 'cancel' in query:
             query = takeCommand().lower()
-            
+
         elif 'exit' in query:
-            speak("It was nice serving you, Signing Off")
+            speak("It was nice serving you. Signing off.")
             break
